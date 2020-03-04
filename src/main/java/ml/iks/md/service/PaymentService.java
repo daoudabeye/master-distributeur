@@ -261,4 +261,15 @@ public class PaymentService implements Serializable {
     }
 
 
+    public void executeQueuedPayment(){
+
+    }
+
+    public void executeQueuedRvi(){
+
+    }
+
+    public void executeQueuedIsago(){
+
+    }
 }

@@ -99,30 +99,6 @@ public class Payment extends AbstractOperation {
         this.frais = frais;
     }
 
-    /**
-     * SMS PAYMENT OPERATION
-     *
-     * @param command          to execute ex: envois
-     * @param recipientProfile profile to receive
-     * @param messageId        id sms
-     * @param gatewayId        gateway
-     * @param sender           sms sender
-     * @param recipient        beneficiary
-     * @param amount           to send
-     */
-    public Payment(Long messageId, Command command, NumProfile recipientProfile, String gatewayId,
-                   String sender, String recipient, double amount) {
-        super("PAYMENT");
-        this.messageId = messageId;
-        this.gateway = gatewayId;
-        this.transactionId = "";
-        this.recipient = recipient;
-        this.payer = sender;
-        this.amount = amount;
-        this.recipientProfile = recipientProfile;
-        this.command = command;
-    }
-
     public int getRelance() {
         return relance;
     }
