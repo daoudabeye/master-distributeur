@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title" value="parametres"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <h:outputStylesheet library="css" name="primeflex.css" />
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="description">
+        Parametres systeme
+    </ui:define>
+
+    <ui:define name="body">
+            <p:tabView dynamic="true" cache="true" effect="fold">
+                <p:tab title="Utilisateurs">
+                    <div class="p-grid">
+                        <div class="p-col-4">
+                            <h:form id="form2S" prependId="false">
+                                <p:focus context="@form"/>
+                                <p:panel styleClass="box-primary card">
+                                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                                        <p:commandButton value="Save" action="#{carFormMB.save}" update="@form"
+                                                         icon="fa fa-check" styleClass="btn-primary"/>
+                                        <p:spacer width="5" rendered="#{carFormMB.isNew()}"/>
+                                        <p:commandButton value="Clear" action="#{carFormMB.clear}" process="@this"
+                                                         icon="fa fa-refresh" styleClass="btn-success"
+                                                         update="@form" rendered="#{carFormMB.isNew()}" resetValues="true"/>
+                                        <p:spacer width="5" rendered="#{not carFormMB.isNew()}"/>
+
+                                        <p:commandButton value="Delete" action="#{carFormMB.remove}" process="@this"
+                                                         rendered="#{not carFormMB.isNew()}" icon="fa fa-trash"
+                                                         styleClass="btn-danger">
+                                            <f:setPropertyActionListener value="true"
+                                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                                        </p:commandButton>
+                                        <p:spacer width="5"/>
+                                        <p:commandButton value="Back" immediate="true"
+                                                         action="car-list?faces-redirect=true"
+                                                         process="@this"
+                                                         icon="fa fa-reply"/>
+                                    </div>
+                                    <p:splitButton value="Save" action="#{carFormMB.save}" update="@form"
+                                                   icon="fa fa-check"
+                                                   styleClass="hidden-md hidden-lg btn-primary">
+                                        <p:menuitem value="Reset" action="#{carFormMB.clear}"
+                                                    process="@this" update="@form" rendered="#{carFormMB.isNew()}"
+                                                    resetValues="true" icon="fa fa-refresh"/>
+                                        <p:menuitem value="Delete" action="#{carFormMB.remove}" process="@this"
+                                                    rendered="#{not carFormMB.isNew()}" icon="fa fa-trash">
+                                            <f:setPropertyActionListener value="true"
+                                                                         target="#{facesContext.externalContext.flash.keepMessages}"/>
+                                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                                        </p:menuitem>
+                                        <p:separator/>
+                                        <p:menuitem value="Back" action="car-list?faces-redirect=true"
+                                                    process="@this" immediate="true"
+                                                    icon="fa fa-reply"/>
+                                    </p:splitButton>
+
+                                    <hr/>
+
+                                    <div class="ui-g ui-fluid">
+                                        <div class="ui-sm-12 ui-g-6 ui-g-nopad">
+                                            <div class="ui-sm-12 ui-g-11">
+                                                <p:outputLabel for="id" value="ID"/>
+                                            </div>
+                                            <div class="ui-sm-12 ui-g-11">
+                                                <p:inputText id="id" value="#{carFormMB.car.id}" readonly="true"
+                                                             styleClass="form-control ui-state-disabled" style="width: 100%"/>
+                                                <span class="help-block">
+                                    <p:message for="id"/>
+                            </span>
+                                            </div>
+                                        </div>
+                                        <div class="ui-sm-12 ui-g-6 ui-g-nopad">
+                                            <div class="ui-sm-12 ui-g-11">
+                                                <p:outputLabel value="Model" for="inptModel"/>
+                                            </div>
+                                            <div class="ui-sm-12 ui-g-11">
+                                                <p:inputText id="inptModel" value="#{carFormMB.car.model}" required="true"/>
+                                                <span class="help-block">
+                                <p:message for="inptModel"/>
+                            </span>
+                                            </div>
+                                        </div>
+                                        <div class="ui-sm-12 ui-g-6 ui-g-nopad">
+                                            <div class="ui-sm-12 ui-g-11">
+                                                <p:outputLabel value="Name" for="inptName"/>
+                                            </div>
+                                            <div class="ui-sm-12 ui-g-11">
+                                                <p:inputText id="inptName" value="#{carFormMB.car.name}" required="true"/>
+                                                <span class="help-block">
+                                <p:message for="inptName"/>
+                            </span>
+                                            </div>
+                                        </div>
+                                        <div class="ui-sm-12 ui-g-6 ui-g-nopad">
+                                            <div class="ui-sm-12 ui-g-11">
+                                                <p:outputLabel value="Price" for="inptPrice"/>
+                                            </div>
+                                            <div class="ui-sm-12 ui-g-11">
+                                                <p:inputNumber id="inptPrice" value="#{carFormMB.car.price}" required="true"/>
+                                                <span class="help-block">
+                                <p:message for="inptPrice"/>
+                            </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <h:panelGroup id="footer" layout="block" styleClass="hidden-sm hidden-md hidden-lg">
+                                        <hr/>
+                                        <p:splitButton value="Save" action="#{carFormMB.save}" update="@form"
+                                                       icon="fa fa-check"
+                                                       styleClass="hidden-md hidden-lg btn-primary">
+                                            <p:menuitem value="Reset" action="#{carFormMB.clear}"
+                                                        process="@this" update="@form" rendered="#{carFormMB.isNew()}"
+                                                        resetValues="true" icon="fa fa-refresh"/>
+                                            <p:menuitem value="Delete" action="#{carFormMB.remove}" process="@this"
+                                                        rendered="#{not carFormMB.isNew()}" icon="fa fa-trash">
+                                                <f:setPropertyActionListener value="true"
+                                                                             target="#{facesContext.externalContext.flash.keepMessages}"/>
+                                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                                            </p:menuitem>
+                                            <p:separator/>
+                                            <p:menuitem value="Back" action="car-list?faces-redirect=true"
+                                                        process="@this" immediate="true"
+                                                        icon="fa fa-reply"/>
+                                        </p:splitButton>
+                                    </h:panelGroup>
+                                </p:panel>
+
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                                    <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                                     icon="fa fa-check"/>
+                                    <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                                     icon="fa fa-close"/>
+                                </p:confirmDialog>
+                            </h:form>
+                        </div>
+                        <div class="p-col">
+                            <p:dataTable var="car" value="#{dtBasicView.cars}">
+                                <p:column headerText="Id">
+                                    <h:outputText value="#{car.id}" />
+                                </p:column>
+
+                                <p:column headerText="Year">
+                                    <h:outputText value="#{car.year}" />
+                                </p:column>
+
+                                <p:column headerText="Brand">
+                                    <h:outputText value="#{car.brand}" />
+                                </p:column>
+
+                                <p:column headerText="Color">
+                                    <h:outputText value="#{car.color}" />
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </p:tab>
+                <p:tab title="Commandes">
+                    <h:form>
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <div id="cmd-main-buttons" class="hidden-sm hidden-xs">
+                                    <p:commandButton action="command-form?faces-redirect=true" icon="fa fa-plus"
+                                                     value="Ajouter" styleClass="btn-primary"/>
+                                    <p:spacer width="5"/>
+                                    <p:commandButton value="Delete Selected" icon="fa fa-trash" styleClass="btn-danger"
+                                                     action="#{cmdListMB.delete}"
+                                                     disabled="#{empty cmdListMB.selected or cmdListMB.selected.size() == 0}"
+                                                     process="@this" update="@form"
+                                    >
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                                    </p:commandButton>
+                                    <p:spacer width="5"/>
+                                    <p:commandButton value="View selected" update="@(.ui-dialog)" styleClass="btn-info"
+                                                     disabled="#{empty cmdListMB.selected or cmdListMB.selected.size() == 0}"
+                                                     oncomplete="PF('selected').show()" icon="fa fa-search"/>
+                                </div>
+
+                                <p:splitButton value="New" action="car-form?faces-redirect=true"
+                                               icon="fa fa-plus"
+                                               styleClass="hidden-md hidden-lg btn-primary">
+                                    <p:menuitem value="Delete Selected" action="#{cmdListMB.delete}"
+                                                process="@this" update="@form"
+                                                disabled="#{empty cmdListMB.selected or cmdListMB.selected.size() == 0}"
+                                                icon="fa fa-trash">
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                                    </p:menuitem>
+                                    <p:menuitem value="View selected" update="@(.ui-dialog)"
+                                                oncomplete="PF('selectedCmd').show()"
+                                                disabled="#{empty cmdListMB.selected or cmdListMB.selected.size() == 0}"
+                                                icon="fa fa-search"
+                                    />
+                                </p:splitButton>
+
+                                <p:separator/>
+                                <p:dataTable widgetVar="carsTable" var="c" value="#{cmdListMB.commands}" rows="5"
+                                             rowKey="#{c.id}" lazy="true" paginator="true"
+                                             filteredValue="#{cmdListMB.filteredValue}"
+                                             paginatorPosition="bottom" selection="#{cmdListMB.selected}"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {JumpToPageDropdown}"
+                                             currentPageReportTemplate="[ {startRecord} to {endRecord} of {totalRecords} ]"
+                                             rowsPerPageTemplate="5,10,15,20,30"
+                                >
+
+                                    <p:ajax event="rowSelectCheckbox" update="@(.ui-button, .ui-confirm-dialog)"/>
+                                    <p:ajax event="rowUnselectCheckbox" update="@(.ui-button, .ui-confirm-dialog)"/>
+                                    <p:ajax event="rowSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
+                                    <p:ajax event="rowUnselect" update="@(.ui-button, .ui-confirm-dialog)"/>
+                                    <p:ajax event="toggleSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
+
+                                    <f:facet name="header">
+                                        Find Car by id: <p:inputNumber id="inptId" decimalPlaces="0" value="#{cmdListMB.id}"/>
+                                        <p:spacer height="5"/>
+                                        <p:commandButton id="brFind"
+                                                         value="Find"
+                                                         action="#{cmdListMB.findCarById(cmdListMB.id)}"
+                                                         process="@form"
+                                                         update="@form"
+                                                         styleClass="btn-flat bg-black btn-states"
+                                                         partialSubmit="true"/>
+                                    </f:facet>
+                                    <p:column selectionMode="multiple" width="5%" styleClass="align-center"/>
+
+                                    <p:column headerText="Designation" filterBy="#{c.name}" sortBy="#{c.name}"
+                                              filterMatchMode="contains">
+                                        <f:facet name="filter">
+                                            <p:autoComplete value="#{cmdListMB.filter.entity.name}" forceSelection="true"
+                                                            minQueryLength="2" queryDelay="500"
+                                                            completeMethod="#{cmdListMB.completeModel}" maxResults="10">
+                                                <p:ajax event="itemSelect" process="@this" update="@none"
+                                                        oncomplete="PF('carsTable').filter()"/>
+                                            </p:autoComplete>
+                                        </f:facet>
+                                        <p:link value="#{c.name}" outcome="command-form.xhtml" >
+                                            <f:param name="id" value="#{c.id}"/>
+                                        </p:link>
+
+                                    </p:column>
+                                    <p:column headerText="Type" sortBy="#{c.type}" filterBy="#{c.type}">
+                                        #{c.type}
+                                    </p:column>
+                                    <p:column headerText="Profile" sortBy="#{c.profile}" filterBy="#{c.profile}">
+                                        <f:facet name="filter">
+                                            <p:inputText value="#{cmdListMB.filter.entity.profile}">
+                                                <p:ajax process="@this" update="@none" oncomplete="PF('carsTable').filter()"/>
+                                            </p:inputText>
+                                        </f:facet>
+                                        #{c.profile}
+                                    </p:column>
+                                    <p:column headerText="Operateur" sortBy="#{c.carrier}" filterBy="#{c.carrier}">
+                                        #{c.carrier}
+                                    </p:column>
+                                    <p:column headerText="Mode" sortBy="#{c.modeExecution}" filterBy="#{c.modeExecution}">
+                                        #{c.modeExecution}
+                                    </p:column>
+                                    <p:column headerText="Code" sortBy="#{c.pattern}" filterBy="#{c.pattern}">
+                                        #{c.pattern}
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                            <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                             icon="fa fa-check"/>
+                            <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                             icon="fa fa-close"/>
+                        </p:confirmDialog>
+                    </h:form>
+                </p:tab>
+                <p:tab title="Routes">
+                    <h:form>
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <div class="hidden-sm hidden-xs">
+                                    <p:commandButton action="route-form?faces-redirect=true" icon="fa fa-plus"
+                                                     value="Ajouter" styleClass="btn-primary"/>
+                                    <p:spacer width="5"/>
+                                    <p:commandButton value="Delete Selected" icon="fa fa-trash" styleClass="btn-danger"
+                                                     action="#{cmdListMB.delete}"
+                                                     disabled="#{empty routeListMB.selected or routeListMB.selected.size() == 0}"
+                                                     process="@this" update="@form"
+                                    >
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                                    </p:commandButton>
+                                    <p:spacer width="5"/>
+                                    <p:commandButton value="View selected" update="@(.ui-dialog)" styleClass="btn-info"
+                                                     disabled="#{empty routeListMB.selected or routeListMB.selected.size() == 0}"
+                                                     oncomplete="PF('selectedRoute').show()" icon="fa fa-search"/>
+                                    <p:commandButton value="Route" update="@(.ui-dialog)" styleClass="btn-info"
+                                                     disabled="#{empty routeListMB.selected or routeListMB.selected.size() == 0}"
+                                                     oncomplete="PF('route').show()" icon="fa fa-search"/>
+                                </div>
+
+                                <p:splitButton value="New" action="car-form?faces-redirect=true"
+                                               icon="fa fa-plus"
+                                               styleClass="hidden-md hidden-lg btn-primary">
+                                    <p:menuitem value="Delete Selected" action="#{routeListMB.delete}"
+                                                process="@this" update="@form"
+                                                disabled="#{empty routeListMB.selected or routeListMB.selected.size() == 0}"
+                                                icon="fa fa-trash">
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                                    </p:menuitem>
+                                    <p:menuitem value="View selected" update="@(.ui-dialog)"
+                                                oncomplete="PF('selectedRoute').show()"
+                                                disabled="#{empty routeListMB.selected or routeListMB.selected.size() == 0}"
+                                                icon="fa fa-search"
+                                    />
+                                </p:splitButton>
+
+                                <p:separator/>
+                                <p:dataTable widgetVar="carsTable" var="c" value="#{routeListMB.routingTables}" rows="5"
+                                             rowKey="#{c.id}" lazy="true" paginator="true"
+                                             filteredValue="#{routeListMB.filteredValue}"
+                                             paginatorPosition="bottom" selection="#{routeListMB.selected}"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {JumpToPageDropdown}"
+                                             currentPageReportTemplate="[ {startRecord} to {endRecord} of {totalRecords} ]"
+                                             rowsPerPageTemplate="5,10,15,20,30"
+                                >
+
+                                    <p:ajax event="rowSelectCheckbox" update="@(.ui-button, .ui-confirm-dialog)"/>
+                                    <p:ajax event="rowUnselectCheckbox" update="@(.ui-button, .ui-confirm-dialog)"/>
+                                    <p:ajax event="rowSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
+                                    <p:ajax event="rowUnselect" update="@(.ui-button, .ui-confirm-dialog)"/>
+                                    <p:ajax event="toggleSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
+
+                                    <f:facet name="header">
+                                        Find By id: <p:inputNumber decimalPlaces="0" value="#{routeListMB.id}"/>
+                                        <p:spacer height="5"/>
+                                        <p:commandButton value="Find"
+                                                         action="#{routeListMB.findById(routeListMB.id)}"
+                                                         process="@form"
+                                                         update="@form"
+                                                         styleClass="btn-flat bg-black btn-states"
+                                                         partialSubmit="true"/>
+                                    </f:facet>
+                                    <p:column selectionMode="multiple" width="5%" styleClass="align-center"/>
+
+                                    <p:column headerText="Designation" filterBy="#{c.name}" sortBy="#{c.name}"
+                                              filterMatchMode="contains">
+                                        <f:facet name="filter">
+                                            <p:autoComplete value="#{routeListMB.filter.entity.name}" forceSelection="true"
+                                                            minQueryLength="2" queryDelay="500"
+                                                            completeMethod="#{routeListMB.completeModel}" maxResults="10">
+                                                <p:ajax event="itemSelect" process="@this" update="@none"
+                                                        oncomplete="PF('carsTable').filter()"/>
+                                            </p:autoComplete>
+                                        </f:facet>
+                                        <p:link value="#{c.name}" outcome="route-form.xhtml" >
+                                            <f:param name="id" value="#{c.id}"/>
+                                        </p:link>
+
+                                    </p:column>
+                                    <p:column headerText="Profile" sortBy="#{c.profile}" filterBy="#{c.profile}">
+                                        <f:facet name="filter">
+                                            <p:inputText value="#{cmdListMB.filter.entity.profile}">
+                                                <p:ajax process="@this" update="@none" oncomplete="PF('carsTable').filter()"/>
+                                            </p:inputText>
+                                        </f:facet>
+                                        #{c.profile}
+                                    </p:column>
+                                    <p:column headerText="RegEx" sortBy="#{c.addressRegEx}" filterBy="#{c.addressRegEx}">
+                                        #{c.addressRegEx}
+                                    </p:column>
+                                    <p:column headerText="Gateways">
+                                        #{c.gateways}
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                            <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                             icon="fa fa-check"/>
+                            <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                             icon="fa fa-close"/>
+                        </p:confirmDialog>
+                    </h:form>
+
+                </p:tab>
+                <p:tab title="Messages">
+                    <h:form>
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <div class="hidden-sm hidden-xs">
+                                    <p:commandButton action="msg-pattern-form?faces-redirect=true" icon="fa fa-plus"
+                                                     value="Ajouter" styleClass="btn-primary"/>
+                                    <p:spacer width="5"/>
+                                    <p:commandButton value="Delete Selected" icon="fa fa-trash" styleClass="btn-danger"
+                                                     action="#{messagePatternListMB.delete}"
+                                                     disabled="#{empty messagePatternListMB.selected or messagePatternListMB.selected.size() == 0}"
+                                                     process="@this" update="@form"
+                                    >
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                                    </p:commandButton>
+                                    <p:spacer width="5"/>
+                                    <p:commandButton value="View selected" update="@(.ui-dialog)" styleClass="btn-info"
+                                                     disabled="#{empty messagePatternListMB.selected or messagePatternListMB.selected.size() == 0}"
+                                                     oncomplete="PF('selectedRoute').show()" icon="fa fa-search"/>
+                                </div>
+
+                                <p:splitButton value="New" action="msg-pattern-form?faces-redirect=true"
+                                               icon="fa fa-plus"
+                                               styleClass="hidden-md hidden-lg btn-primary">
+                                    <p:menuitem value="Delete Selected" action="#{messagePatternListMB.delete}"
+                                                process="@this" update="@form"
+                                                disabled="#{empty messagePatternListMB.selected or messagePatternListMB.selected.size() == 0}"
+                                                icon="fa fa-trash">
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                                    </p:menuitem>
+                                    <p:menuitem value="View selected" update="@(.ui-dialog)"
+                                                oncomplete="PF('selectedRoute').show()"
+                                                disabled="#{empty messagePatternListMB.selected or messagePatternListMB.selected.size() == 0}"
+                                                icon="fa fa-search"
+                                    />
+                                </p:splitButton>
+
+                                <p:separator/>
+                                <p:dataTable widgetVar="carsTable" var="c" value="#{messagePatternListMB.messagePatterns}" rows="5"
+                                             rowKey="#{c.id}" lazy="true" paginator="true"
+                                             filteredValue="#{messagePatternListMB.filteredValue}"
+                                             paginatorPosition="bottom" selection="#{messagePatternListMB.selected}"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {JumpToPageDropdown}"
+                                             currentPageReportTemplate="[ {startRecord} to {endRecord} of {totalRecords} ]"
+                                             rowsPerPageTemplate="5,10,15,20,30"
+                                >
+
+                                    <p:ajax event="rowSelectCheckbox" update="@(.ui-button, .ui-confirm-dialog)"/>
+                                    <p:ajax event="rowUnselectCheckbox" update="@(.ui-button, .ui-confirm-dialog)"/>
+                                    <p:ajax event="rowSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
+                                    <p:ajax event="rowUnselect" update="@(.ui-button, .ui-confirm-dialog)"/>
+                                    <p:ajax event="toggleSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
+
+                                    <f:facet name="header">
+                                        Find By id: <p:inputNumber decimalPlaces="0" value="#{messagePatternListMB.id}"/>
+                                        <p:spacer height="5"/>
+                                        <p:commandButton value="Find"
+                                                         action="#{messagePatternListMB.findById(messagePatternListMB.id)}"
+                                                         process="@form"
+                                                         update="@form"
+                                                         styleClass="btn-flat bg-black btn-states"
+                                                         partialSubmit="true"/>
+                                    </f:facet>
+                                    <p:column selectionMode="multiple" width="5%" styleClass="align-center"/>
+
+                                    <p:column headerText="ID" filterBy="#{c.id}" sortBy="#{c.id}"
+                                              filterMatchMode="contains">
+                                        <f:facet name="filter">
+                                            <p:autoComplete value="#{messagePatternListMB.filter.entity.id}" forceSelection="true"
+                                                            minQueryLength="2" queryDelay="500"
+                                                            completeMethod="#{messagePatternListMB.completeModel}" maxResults="10">
+                                                <p:ajax event="itemSelect" process="@this" update="@none"
+                                                        oncomplete="PF('carsTable').filter()"/>
+                                            </p:autoComplete>
+                                        </f:facet>
+                                        <p:link value="#{c.id}" outcome="msg-pattern-form.xhtml" >
+                                            <f:param name="id" value="#{c.id}"/>
+                                        </p:link>
+                                    </p:column>
+
+                                    <p:column headerText="Type" sortBy="#{c.messageType}" filterBy="#{c.messageType}">
+                                        #{c.messageType}
+                                    </p:column>
+
+                                    <p:column headerText="Regex" sortBy="#{c.regex}" filterBy="#{c.regex}">
+                                        #{c.regex}
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                            <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                             icon="fa fa-check"/>
+                            <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                             icon="fa fa-close"/>
+                        </p:confirmDialog>
+                    </h:form>
+                </p:tab>
+            </p:tabView>
+
+        <p:dialog header="Commande" widgetVar="selectedCmd" height="250"
+                  width="400" responsive="true" styleClass="box-success">
+            <p:dataList id="selectedCmdList" value="#{cmdListMB.selected}" var="cmd"
+                        type="definition">
+                ID: #{cmd.id} - Name: #{cmd.name} - Code: #{cmd.pattern}
+            </p:dataList>
+        </p:dialog>
+
+        <p:dialog header="Routes" widgetVar="route" height="400"
+                  width="500" responsive="true" styleClass="box-success">
+            <p:dataList id="selected" value="#{routeListMB.selected}" var="s"
+                        type="definition">
+                ID: #{s.id} - Name: #{s.name}
+                <hr/>
+                <h:form>
+                <div class="row">
+                        <div class="col-md-6">
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:selectOneMenu id="inptOperateur" required="true">
+                                    <f:selectItems value="#{beanUtils.carrier}"/>
+                                </p:selectOneMenu>
+                                <span class="help-block">
+                                <p:message for="inptOperateur"/>
+                                </span>
+                            </div>
+                            <p:commandButton value="Ajouter" icon="pi pi-check" action="#{clientListMB.saveMobileNumber}"
+                                             update="@form"/>
+
+                            <p:commandButton value="Supp." icon="pi pi-check" action="#{clientListMB.saveMobileNumber}"
+                                             update="@form"/>
+
+                        </div>
+                        <div class="col-md-6">
+                            <p:dataList value="#{s.gateways}" var="gtw" type="ordered" widgetVar="numberList"
+                                        id="numberList">
+                                <f:facet name="header">
+                                    Numeros Enregistrés
+                                </f:facet>
+                                #{gtw.gatewayId}, #{gtw.p1}
+                            </p:dataList>
+                        </div>
+                </div>
+                </h:form>
+            </p:dataList>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

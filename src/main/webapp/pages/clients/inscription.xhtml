@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title"
+                  value="Clients"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="description">
+        Find clients by name, price and model
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form>
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton action="client-form?faces-redirect=true" icon="fa fa-plus"
+                                         value="New" styleClass="btn-primary"/>
+                        <p:spacer width="5"/>
+                        <p:commandButton value="Delete Selected" icon="fa fa-trash" styleClass="btn-danger"
+                                         action="#{clientListMB.delete}"
+                                         disabled="#{empty clientListMB.selected or clientListMB.selected.size() == 0}"
+                                         process="@this" update="@form"
+                        >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+                        <p:spacer width="5"/>
+                        <p:commandButton value="Mobiles" update="@(.ui-dialog)" styleClass="btn-info"
+                                         disabled="#{empty clientListMB.selected or clientListMB.selected.size() == 0}"
+                                         oncomplete="PF('selectedCars').show()" icon="fa fa-search"/>
+                    </div>
+
+                    <p:splitButton value="New" action="client-form?faces-redirect=true"
+                                   icon="fa fa-plus"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem value="Delete Selected" action="#{clientListMB.delete}"
+                                    process="@this" update="@form"
+                                    disabled="#{empty clientListMB.selected or clientListMB.selected.size() == 0}"
+                                    icon="fa fa-trash">
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:menuitem value="View selected" update="@(.ui-dialog)"
+                                    oncomplete="PF('selectedCars').show()"
+                                    disabled="#{empty clientListMB.selected or clientListMB.selected.size() == 0}"
+                                    icon="fa fa-search"
+                        />
+                    </p:splitButton>
+
+                    <p:separator/>
+                    <p:dataTable widgetVar="clientsTable" var="c" value="#{clientListMB.clients}" rows="5"
+                                 rowKey="#{c.id}" lazy="true" paginator="true"
+                                 filteredValue="#{clientListMB.filteredValue}"
+                                 paginatorPosition="bottom" selection="#{clientListMB.selected}"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {JumpToPageDropdown}"
+                                 currentPageReportTemplate="[ {startRecord} to {endRecord} of {totalRecords} ]"
+                                 rowsPerPageTemplate="5,10,15,20,30,50,100"
+                    >
+
+                        <p:ajax event="rowSelectCheckbox" update="@(.ui-button, .ui-confirm-dialog)"/>
+                        <p:ajax event="rowUnselectCheckbox" update="@(.ui-button, .ui-confirm-dialog)"/>
+                        <p:ajax event="rowSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
+                        <p:ajax event="rowUnselect" update="@(.ui-button, .ui-confirm-dialog)"/>
+                        <p:ajax event="toggleSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
+
+                        <f:facet name="header">
+                            Find Client by id: <p:inputNumber id="inptId" decimalPlaces="0" value="#{clientListMB.id}"/>
+                            <p:spacer height="5"/>
+                            <p:commandButton id="brFind"
+                                             value="Find"
+                                             action="#{clientListMB.findById(clientListMB.id)}"
+                                             process="@form"
+                                             update="@form"
+                                             styleClass="btn-flat bg-black btn-states"
+                                             partialSubmit="true"/>
+                        </f:facet>
+                        <p:column selectionMode="multiple" width="5%" styleClass="align-center"/>
+
+                        <p:column headerText="Nom" sortBy="#{c.nom}" filterBy="#{c.nom}">
+                            <f:facet name="filter">
+                                <p:inputText value="#{clientListMB.filter.entity.nom}">
+                                    <p:ajax process="@this" update="@none" oncomplete="PF('clientsTable').filter()"/>
+                                </p:inputText>
+                            </f:facet>
+                            <p:link value="#{c.nom}" outcome="client-form.xhtml">
+                                <f:param name="id" value="#{c.id}"/>
+                            </p:link>
+                        </p:column>
+                        <p:column headerText="Numero Paiement" sortBy="#{c.numero}" filterBy="#{c.numero}">
+                            <f:facet name="filter">
+                                <p:inputText value="#{clientListMB.filter.entity.numero}">
+                                    <p:ajax process="@this" update="@none" oncomplete="PF('clientsTable').filter()"/>
+                                </p:inputText>
+                            </f:facet>
+                            #{c.numero}
+                        </p:column>
+                        <p:column headerText="Numeros" sortBy="#{c.numero}">
+                            <p:dataList value="#{clientListMB.getMobiles(c.id)}" var="n">
+                                #{n.number}[#{n.profile}][#{n.operator}]
+                            </p:dataList>
+                        </p:column>
+                        <p:column headerText="Solde" sortBy="#{c.balance}">
+                            #{c.balance}
+                        </p:column>
+                        <p:column headerText="Inscripteur" sortBy="#{c.numeroInscripteur}"
+                                  filterBy="#{c.numeroInscripteur}">
+                            <f:facet name="filter">
+                                <p:inputText value="#{clientListMB.filter.entity.numeroInscripteur}">
+                                    <p:ajax process="@this" update="@none" oncomplete="PF('clientsTable').filter()"/>
+                                </p:inputText>
+                            </f:facet>
+                            #{c.numeroInscripteur}
+                        </p:column>
+
+                        <p:column headerText="Total Inscris">
+                            #{c.inscris}
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+
+        <p:dialog header="Mobiles" widgetVar="selectedCars" height="400"
+                  width="600" responsive="true" styleClass="box-success">
+            <ui:define name="metadata">
+                <f:metadata>
+                    <!-- use view action if you are in a Java EE 7 server: <f:viewAction action="#{simFormMB.init()}"/>-->
+                    <f:event type="preRenderView" listener="#{clientListMB.initMobileNumber}"/>
+                </f:metadata>
+                <ui:param name="renderAsterisks" value="true"/>
+            </ui:define>
+
+            <p:dataList id="selected" value="#{clientListMB.selected}" var="s"
+                        type="definition">
+                ID: #{s.id} - Name: #{s.nom}
+                <hr/>
+                <div class="row">
+                    <h:form>
+                        <div class="col-md-6">
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:selectOneMenu id="inptOperateur" value="#{clientListMB.mobileNumber.operator}"
+                                                 required="true">
+                                    <f:selectItems value="#{beanUtils.carrier}"/>
+                                </p:selectOneMenu>
+                                <span class="help-block">
+                                <p:message for="inptOperateur"/>
+                            </span>
+                            </div>
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:selectOneMenu id="selectProfile" required="true"
+                                                 value="#{clientListMB.mobileNumber.profile}">
+                                    <f:selectItems value="#{beanUtils.profile}"/>
+                                </p:selectOneMenu>
+                                <span class="help-block">
+                                <p:message for="selectProfile"/>
+                                </span>
+                            </div>
+                            <div class="ui-sm-12 ui-g-11">
+                                <p:inputText id="inptPattern" value="#{clientListMB.mobileNumber.number}" placeholder="Numero"/>
+                                <span class="help-block">
+                                <p:message for="inptPattern"/>
+                            </span>
+                            </div>
+                            <div class="ui-sm-2 ui-g-11">
+                                <p:inputNumber decimalPlaces="0" maxValue="9" id="priority" value="#{clientListMB.mobileNumber.prioriter}" placeholder="Priorité"/>
+                                <span class="help-block">
+                                <p:message for="priority"/>
+                            </span>
+                            </div>
+                            <div class="ui-sm-2 ui-g-11">
+                                <h:outputText value="Numero Par Defaut"/>
+                                <p:inputSwitch value="#{clientListMB.mobileNumber.defaultNumber}"/>
+                                <span class="help-block">
+                                <p:message for="priority"/>
+                            </span>
+                            </div>
+                            <p:commandButton value="Submit" icon="pi pi-check" action="#{clientListMB.saveMobileNumber}"
+                                             update="@form"/>
+
+                        </div>
+                        <div class="col-md-6">
+                            <p:dataList value="#{clientListMB.getMobiles(s.id)}" var="num" type="ordered" widgetVar="numberList"
+                                        id="numberList">
+                                <f:facet name="header">
+                                    Numeros Enregistrés
+                                </f:facet>
+                                #{num.number}[#{num.profile}][#{num.operator}]
+                                <p:commandButton icon="fa fa-trash" action="#{clientListMB.removeMobileNumber(num.id)}"/>
+                            </p:dataList>
+                        </div>
+                    </h:form>
+                </div>
+            </p:dataList>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

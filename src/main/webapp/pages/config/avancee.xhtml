@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title" value="Mobile"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="description">
+        Find gateway by name, port and model
+    </ui:define>
+
+    <ui:define name="body">
+        <h:form>
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div id="main-buttons" class="hidden-sm hidden-xs">
+                        <p:commandButton action="gateway-form?faces-redirect=true" icon="fa fa-plus"
+                                         value="New" styleClass="btn-primary"/>
+                        <p:spacer width="5"/>
+                        <p:commandButton value="Delete Selected" icon="fa fa-trash" styleClass="btn-danger"
+                                         action="#{gatewayListMB.delete}"
+                                         disabled="#{empty gatewayListMB.selected or gatewayListMB.selected.size() == 0}"
+                                         process="@this" update="@form"
+                        >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+                        <p:spacer width="5"/>
+                        <p:commandButton value="View selected" update="@(.ui-dialog)" styleClass="btn-info"
+                                         disabled="#{empty gatewayListMB.selected or gatewayListMB.selected.size() == 0}"
+                                         oncomplete="PF('selectedCars').show()" icon="fa fa-search"/>
+                        <p:spacer width="10"/>
+                        <p:commandButton value="Start" icon="fa fa-play" styleClass="btn-info"
+                                         action="#{gatewayListMB.start}"
+                                         disabled="#{empty gatewayListMB.selected or gatewayListMB.selected.size() == 0}"
+                                         process="@this" update="@form"
+                        >
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+                        <p:commandButton value="Stop" icon="fa fa-stop" styleClass="btn-danger"
+                                         action="#{gatewayListMB.stop}"
+                                         disabled="#{empty gatewayListMB.selected or gatewayListMB.selected.size() == 0}"
+                                         process="@this" update="@form">
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+
+                        <p:commandButton value="Netoayage" icon="fa fa-trash" styleClass="btn-danger"
+                                         action="#{gatewayListMB.clean}"
+                                         disabled="#{empty gatewayListMB.selected or gatewayListMB.selected.size() == 0}"
+                                         process="@this" update="@form">
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+                    </div>
+
+                    <p:splitButton value="New" action="gateway-form?faces-redirect=true"
+                                   icon="fa fa-plus"
+                                   styleClass="hidden-md hidden-lg btn-primary">
+                        <p:menuitem value="Delete Selected" action="#{gatewayListMB.delete}"
+                                    process="@this" update="@form"
+                                    disabled="#{empty gatewayListMB.selected or gatewayListMB.selected.size() == 0}"
+                                    icon="fa fa-trash">
+                            <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:menuitem>
+                        <p:menuitem value="Details" update="@(.ui-dialog)"
+                                    oncomplete="PF('selectedCars').show()"
+                                    disabled="#{empty gatewayListMB.selected or gatewayListMB.selected.size() == 0}"
+                                    icon="fa fa-search"
+                        />
+                    </p:splitButton>
+
+                    <p:separator/>
+                    <p:dataTable widgetVar="carsTable" var="c" value="#{gatewayListMB.gatewayDefinitions}" rows="5"
+                                 rowKey="#{c.id}" lazy="true" paginator="true"
+                                 filteredValue="#{gatewayListMB.filteredValue}"
+                                 paginatorPosition="bottom" selection="#{gatewayListMB.selected}"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {JumpToPageDropdown}"
+                                 currentPageReportTemplate="[ {startRecord} to {endRecord} of {totalRecords} ]"
+                                 rowsPerPageTemplate="5,10,15,20,30"
+                    >
+
+                        <p:ajax event="rowSelectCheckbox" update="@(.ui-button, .ui-confirm-dialog)"/>
+                        <p:ajax event="rowUnselectCheckbox" update="@(.ui-button, .ui-confirm-dialog)"/>
+                        <p:ajax event="rowSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
+                        <p:ajax event="rowUnselect" update="@(.ui-button, .ui-confirm-dialog)"/>
+                        <p:ajax event="toggleSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
+
+                        <f:facet name="header">
+                            Recherche par Id: <p:inputText id="inptId" decimalPlaces="0" value="#{gatewayListMB.gatewauyId}"/>
+                            <p:spacer height="5"/>
+                            <p:commandButton id="brFind"
+                                             value="Trouver"
+                                             action="#{gatewayListMB.findById(gatewayListMB.gatewauyId)}"
+                                             process="@form"
+                                             update="@form"
+                                             styleClass="btn-flat bg-black btn-states"
+                                             partialSubmit="true"/>
+                        </f:facet>
+                        <p:column selectionMode="multiple" width="5%" styleClass="align-center"/>
+
+                        <p:column headerText="Gateway ID" sortBy="#{c.gatewayId}">
+                            <p:link value="#{c.gatewayId}" outcome="gateway-form.xhtml" >
+                                <f:param name="id" value="#{c.id}"/>
+                            </p:link>
+                        </p:column>
+                        <p:column headerText="Port" sortBy="#{c.p0}">
+                            #{c.p0}
+                        </p:column>
+
+                        <p:column headerText="Rate" sortBy="#{c.p1}">
+                            #{c.p1}
+                        </p:column>
+                        <p:column headerText="Numero" sortBy="#{c.senderId}">
+                            #{c.senderId}
+                        </p:column>
+                        <p:column headerText="Operateur" sortBy="#{c.network}">
+                            #{c.network}
+                        </p:column>
+                        <p:column headerText="Commande" sortBy="#{c.command}">
+                            #{c.command.name}
+                        </p:column>
+                        <p:column headerText="Statut">
+                            #{gatewayListMB.getStatus(c.gatewayId)}
+                        </p:column>
+                    </p:dataTable>
+                </div>
+            </div>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                 icon="fa fa-check"/>
+                <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                 icon="fa fa-close"/>
+            </p:confirmDialog>
+        </h:form>
+
+        <p:dialog header="Selected gateway" widgetVar="selectedCars" height="250"
+                  width="400" responsive="true" styleClass="box-success">
+            <p:dataList id="selectedCarsList" value="#{gatewayListMB.selected}" var="g"
+                        type="definition">
+                <p:panelGrid columns="2">
+                    <h:outputText value="ID:" />
+                    <h:outputText value="#{g.gatewayId}" />
+
+                    <h:outputText value="Port:" />
+                    <h:outputText value="#{g.p0}" />
+
+                    <h:outputText value="Rate:" />
+                    <h:outputText value="#{g.p1}" />
+
+                    <h:outputText value="Reseau:" />
+                    <h:outputText value="#{g.network}" />
+                </p:panelGrid>
+            </p:dataList>
+        </p:dialog>
+
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,42 @@
+= AdminFaces Starter SpringBoot project
+
+
+A simple project to get you started with https://github.com/adminfaces[AdminFaces^].
+
+.Login page
+image:starter1.png[link="https://github.com/adminfaces/admin-starter/blob/master/starter1.png"]
+
+.Car list
+image:starter2.png[link="https://raw.githubusercontent.com/adminfaces/admin-starter/master/starter2.png"]
+
+.Car form
+image:starter3.png[link="https://raw.githubusercontent.com/adminfaces/admin-starter/master/starter3.png"]
+
+.Car form responsive
+image:starter4.png[link="https://raw.githubusercontent.com/adminfaces/admin-starter/master/starter4.png"]
+
+== Running
+
+This starter runs via *SpringBoot* using the `maven` command:
+
+ 
+`mvn spring-boot:run` *or* 
+
+`mvn clean package && java -jar target/admin-starter.war` *or*
+
+`./run.sh/run.cmd`
+
+
+The application will be available at http://localhost:8080/admin-starter
+
+== Maven archetype
+
+We have https://github.com/adminfaces/admin-starter-springboot-archetype[a maven arcuetype^] for this project and it is available on the maven central, you can generate the project with:
+
+----
+mvn archetype:generate -Dfilter=com.github.adminfaces:admin-starter-springboot-archetype
+----
+
+== Demo
+
+A live demo is available on http://admin-starter-admin-starter.1d35.starter-us-east-1.openshiftapps.com/admin-starter/[Openshift here^] or in http://docker175206-admin-starter.jelasticlw.com.br/admin-starter[Jelastic here^]

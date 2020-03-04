@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title"
+                  value="Messages"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="description">
+        Boite de reception et d'envois
+    </ui:define>
+
+    <ui:define name="body">
+        <p:tabView dynamic="true" cache="true" effect="fold">
+            <p:tab title="Inbox">
+                <h:form id="form">
+                    <div class="box-header with-border">
+                        <div id="main-buttons" class="hidden-sm hidden-xs">
+                            <p:commandButton value="Message" update="inMsg" styleClass="btn-info"
+                                             oncomplete="PF('newSms').show()" icon="fa fa-plus"/>
+
+                            <p:spacer width="50"/>
+
+                            <p:commandButton value="Execute" update="inMsg" styleClass="btn-warning" icon="fa fa-cog"
+                                action="#{inMessageListMB.execute}">
+                                <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                            </p:commandButton>
+                        </div>
+                    </div>
+                    <p:separator/>
+                    <p:dataTable var="c" value="#{inMessageListMB.messages}" rows="5"
+                                 rowKey="#{c.id}" lazy="true" paginator="true"
+                                 filteredValue="#{inMessageListMB.filteredValue}"
+                                 paginatorPosition="bottom" selection="#{inMessageListMB.selected}"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {JumpToPageDropdown}"
+                                 currentPageReportTemplate="[ {startRecord} to {endRecord} of {totalRecords} ]"
+                                 rowsPerPageTemplate="5,10,15,20,30"
+                                 id="inMsg"
+                                 dynamic="true"
+                                 widgetVar="messageList"
+                    >
+
+                        <p:ajax event="rowSelectCheckbox" update="@(.ui-button, .ui-confirm-dialog)"/>
+                        <p:ajax event="rowUnselectCheckbox" update="@(.ui-button, .ui-confirm-dialog)"/>
+                        <p:ajax event="rowSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
+                        <p:ajax event="rowUnselect" update="@(.ui-button, .ui-confirm-dialog)"/>
+                        <p:ajax event="toggleSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
+
+                        <f:facet name="header">
+                            Find Car by id: <p:inputNumber id="inptId" decimalPlaces="0" value="#{inMessageListMB.id}"/>
+                            <p:spacer height="5"/>
+                            <p:commandButton id="brFind"
+                                             value="Find"
+                                             action="#{inMessageListMB.findById(inMessageListMB.id)}"
+                                             process="@form"
+                                             update="@form"
+                                             styleClass="btn-flat bg-black btn-states"
+                                             partialSubmit="true"/>
+                        </f:facet>
+                        <p:column selectionMode="multiple" width="5%" styleClass="align-center"/>
+
+                        <p:column headerText="Id">
+                            #{c.id}
+                        </p:column>
+
+                        <p:column headerText="Date">
+                            #{c.messageDate}
+                        </p:column>
+
+                        <p:column headerText="From" sortBy="#{c.address}" filterBy="#{c.address}">
+                            <f:facet name="filter">
+                                <p:inputText value="#{inMessageListMB.filter.entity.address}">
+                                    <p:ajax process="@this" update="@none" oncomplete="PF('messageList').filter()"/>
+                                </p:inputText>
+                            </f:facet>
+                            #{c.address}
+                        </p:column>
+
+                        <p:column headerText="Modem" sortBy="#{c.gatewayId}" filterBy="#{c.gatewayId}">
+                            <f:facet name="filter">
+                                <p:inputText value="#{inMessageListMB.filter.entity.gatewayId}">
+                                    <p:ajax process="@this" update="@none" oncomplete="PF('messageList').filter()"/>
+                                </p:inputText>
+                            </f:facet>
+                            #{c.gatewayId}
+                        </p:column>
+
+                        <p:column headerText="Text" width="40%" filterBy="#{c.text}">
+                            <f:facet name="filter">
+                                <p:inputText value="#{inMessageListMB.filter.entity.text}">
+                                    <p:ajax process="@this" update="@none" oncomplete="PF('messageList').filter()"/>
+                                </p:inputText>
+                            </f:facet>
+                            #{c.text}
+                        </p:column>
+                    </p:dataTable>
+                    <p:poll update="inMsg" interval="50" rendered="true"/>
+
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" styleClass="box-danger box-solid">
+                        <p:commandButton value="Yes" type="button" styleClass="btn-material btn-primary ui-confirmdialog-yes"
+                                         icon="fa fa-check"/>
+                        <p:commandButton value="No" type="button" styleClass="btn-material btn-danger ui-confirmdialog-no"
+                                         icon="fa fa-close"/>
+                    </p:confirmDialog>
+                </h:form>
+            </p:tab>
+            <p:tab title="Envoyés">
+                <h:panelGrid columns="2" cellpadding="10">
+                    <p:graphicImage name="demo/images/godfather/godfather2.jpg"/>
+                    <h:outputText value="Francis Ford Coppola's legendary continuation and sequel to his landmark 1972 film, The_Godfather, parallels the young Vito Corleone's rise with his son Michael's spiritual fall, deepening The_Godfather's depiction of the dark side of the American dream.
+                In the early 1900s, the child Vito flees his Sicilian village for America after the local Mafia kills his family. Vito struggles to make a living, legally or illegally, for his wife and growing brood in Little Italy,
+                killing the local Black Hand Fanucci after he demands his customary cut of the tyro's business. With Fanucci gone, Vito's communal stature grows."/>
+                </h:panelGrid>
+            </p:tab>
+        </p:tabView>
+
+        <p:dialog header="Nouveau Message" widgetVar="newSms" height="300"
+                  width="400" responsive="true" styleClass="box-success">
+            <h:form>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-sm-12 ui-g-11 ui-g-nopad">
+                        <p:selectOneMenu id="selectProfile" required="true" value="#{inMessageListMB.profile}">
+                            <f:selectItems value="#{beanUtils.profile}"/>
+                        </p:selectOneMenu>
+                        <span class="help-block">
+                        <p:message for="selectProfile"/>
+                        </span>
+                    </div>
+
+                    <div class="ui-sm-12 ui-g-12 ui-g-nopad">
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:inputText id="ussdCmd" required="true" value="#{inMessageListMB.numero}" placeholder="Numero"/>
+                            <span class="help-block">
+                                <p:message for="ussdCmd"/>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="ui-sm-12 ui-g-12 ui-g-nopad">
+                        <div class="ui-sm-12 ui-g-11">
+                            <p:inputTextarea id="ussdrsp" required="true" value="#{inMessageListMB.text}"/>
+                            <span class="help-block">
+                                <p:message for="ussdrsp"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div id="bouttonExec" class="hidden-sm hidden-xs margin-bottom">
+                    <p:commandButton value="Envoyer" action="#{inMessageListMB.sendSMS}" update="@form"
+                                     icon="fa fa-send" styleClass="btn-primary"/>
+
+                    <p:commandButton value="Sms groupé" action="#{inMessageListMB.sendToGroup}" update="@form"
+                                     icon="fa fa-users" styleClass="btn-warning"/>
+                </div>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+
+</ui:composition>

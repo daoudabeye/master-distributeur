@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:adm="http://github.com/adminfaces"
+                template="#{layoutMB.template}">
+
+    <ui:define name="metadata">
+        <ui:param name="title"
+                  value="Statistique"/> <!-- Automatic create breadCrumb and page title when param 'title' is provided. -->
+        <style type="text/css">
+            .ui-datatable .ui-datatable-header {
+                text-align: right !important;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="description">
+        operation et retour d'uv
+    </ui:define>
+
+    <ui:define name="body">
+
+        <h:form>
+            <h3 style="margin-top:0">Periode</h3>
+            <h:panelGrid columns="2" style="margin-bottom:10px">
+                <p:datePicker id="inline" value="#{statistiqueMB.from}"/>
+                <p:datePicker id="inline2" value="#{statistiqueMB.to}"/>
+            </h:panelGrid>
+            <p:commandButton value="Submit" icon="pi pi-check" action="#{statistiqueMB.init}" update="@form"/>
+
+            <div class="row">
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">Montant arreté</span>
+                            <span class="info-box-number">#{statistiqueMB.montantTotal}<small> cfa</small></span>
+                            <span class="info-box-number">#{statistiqueMB.countTransactions}<small> tx(s)</small></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-red"><i class="fa fa-google-plus"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">Paiements</span>
+                            <span class="info-box-number">#{statistiqueMB.countRechargeSent} <small>(validés)</small></span>
+                            <span class="info-box-number">#{statistiqueMB.countRechargeUnsent} <small>(non validés)</small></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+
+                <!-- fix for small devices only -->
+                <div class="clearfix visible-sm-block"></div>
+
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">Retour</span>
+                            <span class="info-box-number">0 <small>(retour)</small></span>
+                            <span class="info-box-number">0 <small>(autres)</small></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">commisions</span>
+                            <span class="info-box-number">0</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+
+            <h3>Statistique paiements Orange Money</h3>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <p:panelGrid style="margin-top:20px">
+                        <f:facet name="header">
+                            <p:row>
+                                <p:column colspan="7">Clients Finaux</p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">Agents Orange</p:column>
+                                <p:column colspan="2">Agent Malitel</p:column>
+                                <p:column colspan="2">Agent Telecel</p:column>
+                                <p:column>Total</p:column>
+                            </p:row>
+
+                        </f:facet>
+
+                        <p:row>
+                            <p:column colspan="2" style="font-weight: bold;">#{statistiqueMB.totalOmCfOrange}</p:column>
+
+                            <p:column colspan="2" style="font-weight: bold;">#{statistiqueMB.totalOmCfMalitel}</p:column>
+
+                            <p:column colspan="2" style="font-weight: bold;">#{statistiqueMB.totalOmCfTelecel}</p:column>
+
+                            <p:column rowspan="11" style="font-weight: bold;">0</p:column>
+                        </p:row>
+
+                        <f:facet name="footer">
+                            <p:row>
+                                <p:column colspan="7" style="text-align: right">
+                                    Montant Total
+                                </p:column>
+                            </p:row>
+                        </f:facet>
+                    </p:panelGrid>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <p:panelGrid style="margin-top:20px">
+                        <f:facet name="header">
+                            <p:row>
+                                <p:column colspan="7">Revendeurs</p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">Agents Orange</p:column>
+                                <p:column colspan="2">Agent Malitel</p:column>
+                                <p:column colspan="2">Agent Telecel</p:column>
+                                <p:column>Total</p:column>
+                            </p:row>
+
+                        </f:facet>
+
+                        <p:row>
+                            <p:column colspan="2" style="font-weight: bold;">#{statistiqueMB.totalOmRvOrange}</p:column>
+
+                            <p:column colspan="2" style="font-weight: bold;">#{statistiqueMB.totalOmRvMalitel}</p:column>
+
+                            <p:column colspan="2" style="font-weight: bold;">#{statistiqueMB.totalOmRvTelecel}</p:column>
+
+                            <p:column rowspan="11" style="font-weight: bold;">0</p:column>
+                        </p:row>
+
+                        <f:facet name="footer">
+                            <p:row>
+                                <p:column colspan="7" style="text-align: right">
+                                    Montant Total
+                                </p:column>
+                            </p:row>
+                        </f:facet>
+                    </p:panelGrid>
+                </div>
+            </div>
+
+            <h3>Statistique paiements Mobicash</h3>
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <p:panelGrid style="margin-top:20px">
+                        <f:facet name="header">
+                            <p:row>
+                                <p:column colspan="7">Clients Finaux</p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">Agents Orange</p:column>
+                                <p:column colspan="2">Agent Malitel</p:column>
+                                <p:column colspan="2">Agent Telecel</p:column>
+                                <p:column>Total</p:column>
+                            </p:row>
+
+                        </f:facet>
+
+                        <p:row>
+                            <p:column colspan="2" style="font-weight: bold;">#{statistiqueMB.totalMobiCfOrange}</p:column>
+
+                            <p:column colspan="2" style="font-weight: bold;">#{statistiqueMB.totalMobiCfMalitel}</p:column>
+
+                            <p:column colspan="2" style="font-weight: bold;">#{statistiqueMB.totalMobiCfTelecel}</p:column>
+
+                            <p:column rowspan="11" style="font-weight: bold;">0</p:column>
+                        </p:row>
+
+                        <f:facet name="footer">
+                            <p:row>
+                                <p:column colspan="7" style="text-align: right">
+                                    Montant Total
+                                </p:column>
+                            </p:row>
+                        </f:facet>
+                    </p:panelGrid>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <p:panelGrid style="margin-top:20px">
+                        <f:facet name="header">
+                            <p:row>
+                                <p:column colspan="7">Revendeurs</p:column>
+                            </p:row>
+                            <p:row>
+                                <p:column colspan="2">Agents Orange</p:column>
+                                <p:column colspan="2">Agent Malitel</p:column>
+                                <p:column colspan="2">Agent Telecel</p:column>
+                                <p:column>Total</p:column>
+                            </p:row>
+
+                        </f:facet>
+
+                        <p:row>
+                            <p:column colspan="2" style="font-weight: bold;">#{statistiqueMB.totalMobiRvOrange}</p:column>
+
+                            <p:column colspan="2" style="font-weight: bold;">#{statistiqueMB.totalMobiRvMalitel}</p:column>
+
+                            <p:column colspan="2" style="font-weight: bold;">#{statistiqueMB.totalMobiRvTelecel}</p:column>
+
+                            <p:column rowspan="11" style="font-weight: bold;">0</p:column>
+                        </p:row>
+
+                        <f:facet name="footer">
+                            <p:row>
+                                <p:column colspan="7" style="text-align: right">
+                                    Montant Total
+                                </p:column>
+                            </p:row>
+                        </f:facet>
+                    </p:panelGrid>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+
+</ui:composition>
