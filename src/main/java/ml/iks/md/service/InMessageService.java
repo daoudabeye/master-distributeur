@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -33,11 +34,12 @@ public class InMessageService {
 
     public List<InMessage> paginate(Filter<InMessage> filter) {
         List<InMessage> commands = new ArrayList<>();
-        Pageable pageable = PageRequest.of(filter.getFirst()/filter.getPageSize(), filter.getPageSize(), Sort.by("id").descending());
+        int page = filter.getFirst()/filter.getPageSize();
+        Pageable pageable = PageRequest.of(page, filter.getPageSize(), Sort.by("id").descending());
 
         if (filter.getParams().isEmpty()) {
-            Page<InMessage> page = repository.findAll(pageable);
-            return page.getContent();
+            Page<InMessage> paged = repository.findAll(pageable);
+            return paged.getContent();
         }
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -58,7 +60,11 @@ public class InMessageService {
         criteriaQuery.where(criteriaBuilder.or(args));
         criteriaQuery.orderBy(criteriaBuilder.desc(root.get("id")));
 
-        return em.createQuery(criteriaQuery).getResultList();
+        TypedQuery<InMessage> typedQuery = em.createQuery(criteriaQuery);
+        typedQuery.setFirstResult(page);
+        typedQuery.setMaxResults(filter.getPageSize());
+
+        return typedQuery.getResultList();
 
     }
 

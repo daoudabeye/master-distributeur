@@ -1,6 +1,7 @@
 package ml.iks.md.models;
 
 import ml.iks.md.models.data.Carrier;
+import ml.iks.md.models.data.IncomingMessageType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -22,6 +23,9 @@ public class InMessage implements Serializable {
     private Carrier carrier;
     private int memIndex;
     private boolean lus = false; // lus par autrui
+
+    @Enumerated
+    private IncomingMessageType messageType;
 
     //Fill when new sms received
     @Transient
@@ -131,5 +135,13 @@ public class InMessage implements Serializable {
 
     public void setLus(boolean lus) {
         this.lus = lus;
+    }
+
+    public IncomingMessageType getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(IncomingMessageType messageType) {
+        this.messageType = messageType;
     }
 }

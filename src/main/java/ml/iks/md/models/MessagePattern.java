@@ -1,16 +1,23 @@
 package ml.iks.md.models;
 
 import ml.iks.md.events.AppCallbackManager;
+import ml.iks.md.models.data.CmdType;
 import ml.iks.md.models.data.IncomingMessageType;
 import ml.iks.md.models.data.NumProfile;
+import ml.iks.md.repositories.ClientRepository;
+import ml.iks.md.repositories.CompteRepository;
+import ml.iks.md.repositories.PaymentRepository;
 import ml.iks.md.service.AirtimeService;
+import ml.iks.md.service.PaymentService;
 import ml.iks.md.util.BeanLocator;
+import ml.ikslib.gateway.message.OutboundMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -156,15 +163,41 @@ public class MessagePattern implements Serializable {
                     BeanLocator.find(AirtimeService.class).updateIsagoNumber(msg.getNationalAddress(), compteur);
                     return true;
 
+                case COMMISSION:
+//                    Compte compte =
+//                    BeanLocator.find(CompteRepository.class).save()
+                    return true;
+
+                case RETOUR:
+                    String rpayer = matcher.group("n");
+                    String ramount = matcher.group("m");
+                    String rsolde = matcher.group("s");
+                    Payment rpayment = new Payment(msg.getId(), msg.getGatewayId(), "", rpayer,
+                            Double.parseDouble(ramount), 0f);
+                    rpayment.setStatus(OutboundMessage.SentStatus.Sent);
+                    rpayment.setCommandType(CmdType.RETOUR);
+                    Optional<Client> clRetour = BeanLocator.find(ClientRepository.class).findByNumero(rpayer);
+                    if (clRetour.isPresent()){
+                        rpayment.setClient(clRetour.get());
+                    }
+                    BeanLocator.find(PaymentRepository.class).save(rpayment);
+                    break;
+
                 default:
                     return false;
             }
+
+
         }
         return false;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public int getPriority() {

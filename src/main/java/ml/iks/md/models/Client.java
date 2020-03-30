@@ -26,7 +26,7 @@ public class Client implements Serializable {
     @Size(max = 4, message = "Pin length max 4")
     private String pin = "0000";
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "prioriter")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Collection<MobileNumber> numbers;
 
     @Size(min = 3, max = 200, message = "Address length must be at least 3 and max 200")
@@ -42,7 +42,7 @@ public class Client implements Serializable {
 //    private Long totalClient;
 
     @Formula("(select sum(p.amount) from payment p where p.payer like numero)")
-    private Long total;
+    private Long total = 0L;
 
     @Formula("(select count(*) from client c where c.numero_inscripteur like numero)")
     private Long inscris;
@@ -56,7 +56,6 @@ public class Client implements Serializable {
         this.numero = numero;
         this.numeroInscripteur = inscripteur;
         this.dateInscription = new Date();
-
         this.address = "";
         this.pin = "0000";
         this.balance = 0.0;
@@ -141,14 +140,6 @@ public class Client implements Serializable {
     public void setNumero(String numero) {
         this.numero = numero;
     }
-
-//    public Long getTotalClient() {
-//        return totalClient;
-//    }
-//
-//    public void setTotalClient(Long totalClient) {
-//        this.totalClient = totalClient;
-//    }
 
     public Long getTotal() {
         return total;

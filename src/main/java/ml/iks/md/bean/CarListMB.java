@@ -137,6 +137,4 @@ public class CarListMB implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-
-
 }

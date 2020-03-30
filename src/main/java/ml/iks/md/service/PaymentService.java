@@ -74,10 +74,6 @@ public class PaymentService implements Serializable {
         countQuery.select(criteriaBuilder.count(countQuery.from(Payment.class)));
         count = em.createQuery(countQuery).getSingleResult();
 
-//        System.out.println(count);
-
-//        criteriaQuery.where(criteriaBuilder.and(args));
-
         TypedQuery<Payment> typedQuery = em.createQuery(criteriaQuery);
         typedQuery.setFirstResult(page);
         typedQuery.setMaxResults(filter.getPageSize());
@@ -91,8 +87,9 @@ public class PaymentService implements Serializable {
         filter.getParams().forEach((k,v) -> {
             Predicate predicate = null;
 
-            if("status".equals(k))
-                predicate = criteriaBuilder.equal(root.get(k), outStatus(String.valueOf(v)));
+            if("status".equals(k)){
+                predicate = criteriaBuilder.equal(root.get(k), OutboundMessage.SentStatus.valueOf((String) v));
+            }
             else if("dateCreation".equals(k)){
                 System.out.println(v);
             }
@@ -102,19 +99,6 @@ public class PaymentService implements Serializable {
         });
 
         return predicates;
-    }
-
-    private OutboundMessage.SentStatus outStatus(String v){
-        if("Queued".equals(v))
-            return OutboundMessage.SentStatus.Queued;
-        if("Sent".equals(v))
-            return OutboundMessage.SentStatus.Sent;
-        if("Unsent".equals(v))
-            return OutboundMessage.SentStatus.Unsent;
-        if("Failed".equals(v))
-            return OutboundMessage.SentStatus.Failed;
-
-        return OutboundMessage.SentStatus.Sent;
     }
 
     public void remove(Payment param) {

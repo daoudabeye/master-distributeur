@@ -96,6 +96,20 @@ public class StatistiqueMB implements Serializable {
         return clientService.count();
     }
 
+    public Long getCountCf(){
+        return clientService.count(NumProfile.CF);
+    }
+    public Long getCountGr(){
+        return clientService.count(NumProfile.GR);
+    }
+
+    public Long getCountRv(){
+        return clientService.count(NumProfile.RV);
+    }
+    public Long getCountRvi(){
+        return clientService.count(NumProfile.RVI);
+    }
+
     public Integer getActiveGateway(){
         return Service.getInstance().getGatewayIDs().size();
     }
@@ -105,7 +119,7 @@ public class StatistiqueMB implements Serializable {
     }
 
     public Long getCountAgents(){
-        return 0L;
+        return clientService.count(NumProfile.RVI);
     }
 
     public Date getFrom() {

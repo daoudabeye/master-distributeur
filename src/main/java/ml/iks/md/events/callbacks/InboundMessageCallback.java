@@ -3,6 +3,7 @@ package ml.iks.md.events.callbacks;
 
 import ml.iks.md.models.InMessage;
 import ml.iks.md.models.MessagePattern;
+import ml.iks.md.repositories.InMessageRepository;
 import ml.iks.md.repositories.MessagePatternRepository;
 import ml.iks.md.service.GatewayService;
 import ml.iks.md.util.BeanLocator;
@@ -25,10 +26,12 @@ public class InboundMessageCallback implements IInboundMessageCallback {
             List<MessagePattern> patterns = BeanLocator.find(MessagePatternRepository.class).findAll();
             for (MessagePattern pattern : patterns) {
                 boolean triggered = pattern.findAndTrigger(sms);
-                if(triggered && !pattern.isForwarding())
+                if(triggered && !pattern.isForwarding()) {
+                    sms.setMessageType(pattern.getMessageType());
+                    BeanLocator.find(InMessageRepository.class).save(sms);
                     break;
+                }
             }
-
         } catch (Exception e) {
             logger.error("Error!", e);
         }

@@ -6,6 +6,7 @@ import ml.iks.md.infra.model.Filter;
 import ml.iks.md.model.Car;
 import ml.iks.md.models.Payment;
 import ml.iks.md.models.RoutingTable;
+import ml.iks.md.models.data.IncomingMessageType;
 import ml.iks.md.service.AirtimeService;
 import ml.iks.md.service.CarService;
 import ml.iks.md.service.PaymentService;
@@ -178,6 +179,23 @@ public class PaymentDataView implements Serializable {
 
         if(status.equals(OutboundMessage.SentStatus.Unsent))
             return "btn-warning";
+
+        else
+            return "btn-primary";
+    }
+
+    public String getMsgStatusClass(IncomingMessageType type){
+        if(type == null)
+            return "btn-primary";
+        
+        if(type.equals(IncomingMessageType.PAYMENT))
+            return "btn-warning";
+
+        if(type.equals(IncomingMessageType.COMMISSION))
+            return "btn-danger";
+
+        if(type.equals(IncomingMessageType.PAYMENT_ACK))
+            return "btn-success";
 
         else
             return "btn-primary";

@@ -29,4 +29,6 @@ public interface MobileNumberRepository extends JpaRepository<MobileNumber, Long
     List<MobileNumber> findAllByProfile(NumProfile profile);
 
     void deleteByClient(Client client);
+
+    Long countMobileNumberByProfile(NumProfile profile);
 }

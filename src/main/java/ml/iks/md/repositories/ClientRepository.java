@@ -56,4 +56,5 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     List<Object[]> countProfileByInscriptorAndCarrier(String inscriptor, String profile, String operator);
 
     List<Client> findByNumeroInscripteur(String inscripteur);
+
 }

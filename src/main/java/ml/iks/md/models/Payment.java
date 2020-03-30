@@ -11,8 +11,10 @@ import ml.iks.md.util.BeanLocator;
 import ml.ikslib.gateway.Service;
 import ml.ikslib.gateway.message.MsIsdn;
 import ml.ikslib.gateway.message.OutboundMessage;
+import ml.ikslib.gateway.modem.Modem;
 import ml.ikslib.gateway.ussd.USSDRequest;
 import ml.ikslib.gateway.ussd.USSDResponse;
+import ml.ikslib.gateway.ussd.USSDSessionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -276,6 +278,7 @@ public class Payment extends AbstractOperation {
 
                             if (StringUtils.isEmpty(recipient))
                                 throw new Exception("Echec de l'operation");
+
                         }
                     }
 
@@ -284,7 +287,6 @@ public class Payment extends AbstractOperation {
 
                     creditCmd.withNumero(recipient);
                     log.debug(creditCmd.build());
-                    System.out.println(creditCmd.build());
 
                     USSDRequest ussdRequest = new USSDRequest(creditCmd.build());
 
@@ -307,8 +309,9 @@ public class Payment extends AbstractOperation {
 
                     USSDResponse ussdResponse = Service.getInstance().send(ussdRequest);
                     status = ussdRequest.getSentStatus();
-                    if (ussdResponse != null)
+                    if (ussdResponse != null){
                         response = ussdResponse.getContent();
+                    }
                     if (status.equals(OutboundMessage.SentStatus.Sent)) {
                         this.dateExecution = new Date();
                         if ("ENVOIS".equals(this.getNom()))
@@ -346,17 +349,18 @@ public class Payment extends AbstractOperation {
                     this.setNom(command.getName());
                     this.outGateway = isagosms.getGatewayId();
                     break;
+
+                case RETOUR:
+                    break;
             }
         } catch (Exception e) {
             if(!OutboundMessage.SentStatus.Queued.equals(status))
                 status = OutboundMessage.SentStatus.Failed;
             this.failureCause = e.getLocalizedMessage();
 
-//            AlertMaker.showTrayMessage("Echec Operation", failureCause);
             log.error("Erreur Payment", e);
-
-            String txt = "Echec de la tentative de recharge, Merci de contacter le service client au : 70047171 ou 95151010";
-            BeanLocator.find(AirtimeService.class).sendNotification(payer, txt);
+//            String txt = "Echec de la tentative de recharge, Merci de contacter le service client au : 70047171 ou 95151010";
+//            BeanLocator.find(AirtimeService.class).sendNotification(payer, txt);
         } finally {
             this.relance = relance + 1;
             BeanLocator.find(PaymentRepository.class).saveAndFlush(this);
@@ -366,7 +370,11 @@ public class Payment extends AbstractOperation {
             }
 
             if (!StringUtils.isEmpty(failureCause) && failureCause.length() < 100) {
-                BeanLocator.find(AirtimeService.class).sendNotification(payer, "Echec de l'operation, Merci de contacter le service client au : 70047171 ou 95151010");
+                String text = "Echec de l'operation, Merci de contacter le service client au : 70047171 ou 95151010";
+                if(OutboundMessage.SentStatus.Queued.equals(status))
+                    text = "Merci de vous inscrire via l'application Boutikini ou en envoyant par SMS au 82040404: " +
+                            "N°Orange*N°Orange*N°Malitel*N°Telecel*NOM ET PRENOM*1#  info: 70047171/95151010/51000070";
+                BeanLocator.find(AirtimeService.class).sendNotification(payer, text);
             }
         }
 

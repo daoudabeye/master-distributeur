@@ -53,11 +53,15 @@
                             <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
                         </p:commandButton>
 
-                        <p:commandButton value="Netoayage" icon="fa fa-trash" styleClass="btn-danger"
+                        <p:commandButton value="Netoyage" icon="fa fa-trash" styleClass="btn-danger"
                                          action="#{gatewayListMB.clean}"
                                          disabled="#{empty gatewayListMB.selected or gatewayListMB.selected.size() == 0}"
                                          process="@this" update="@form">
                             <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-danger"/>
+                        </p:commandButton>
+
+                        <p:commandButton value="Teste" icon="fa fa-trash" styleClass="btn-danger"
+                                         action="#{gatewayListMB.teste}" process="@this" update="@form">
                         </p:commandButton>
                     </div>
 

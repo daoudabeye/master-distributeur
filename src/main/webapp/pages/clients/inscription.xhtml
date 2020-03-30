@@ -61,7 +61,7 @@
                                  rowKey="#{c.id}" lazy="true" paginator="true"
                                  filteredValue="#{clientListMB.filteredValue}"
                                  paginatorPosition="bottom" selection="#{clientListMB.selected}"
-                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {JumpToPageDropdown}"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {JumpToPageDropdown} {Exporters}"
                                  currentPageReportTemplate="[ {startRecord} to {endRecord} of {totalRecords} ]"
                                  rowsPerPageTemplate="5,10,15,20,30,50,100"
                     >
@@ -71,6 +71,20 @@
                         <p:ajax event="rowSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
                         <p:ajax event="rowUnselect" update="@(.ui-button, .ui-confirm-dialog)"/>
                         <p:ajax event="toggleSelect" update="@(.ui-button, .ui-confirm-dialog)"/>
+
+                        <f:facet name="{Exporters}">
+                            <div style="float:right;padding-top: 5px;">
+                                <h:commandLink>
+                                    <p:graphicImage name="images/excel_48px.png" width="24"/>
+                                    <p:dataExporter type="xls" target="txList" fileName="transactions" />
+                                </h:commandLink>
+
+                                <h:commandLink>
+                                    <p:graphicImage name="images/pdf_48px.png" width="24"/>
+                                    <p:dataExporter type="pdf" target="txList" fileName="transactions"/>
+                                </h:commandLink>
+                            </div>
+                        </f:facet>
 
                         <f:facet name="header">
                             Find Client by id: <p:inputNumber id="inptId" decimalPlaces="0" value="#{clientListMB.id}"/>
@@ -123,6 +137,9 @@
 
                         <p:column headerText="Total Inscris">
                             #{c.inscris}
+                        </p:column>
+                        <p:column headerText="Date Inscription">
+                            #{c.dateInscription}
                         </p:column>
                     </p:dataTable>
                 </div>

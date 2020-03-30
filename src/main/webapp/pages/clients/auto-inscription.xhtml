@@ -24,6 +24,15 @@
             <p:commandButton value="View selected" update="@(.ui-dialog)" styleClass="btn-info"
                              oncomplete="PF('selectedInsc').show()" icon="fa fa-search"/>
 
+            <h:panelGrid columns="2" style="margin-bottom:10px" cellspacing="2">
+                <p:datePicker id="inline" value="#{statistiqueAutoMB.from}"/>
+                <p:datePicker id="inline2" value="#{statistiqueAutoMB.to}"/>
+            </h:panelGrid>
+            <p:selectOneMenu id="selectProfile" required="true"
+                             value="#{statistiqueAutoMB.profile}">
+                <f:selectItems value="#{beanUtils.profile}"/>
+            </p:selectOneMenu>
+            <p:commandButton value="Submit" icon="pi pi-check" action="#{statistiqueAutoMB.initDataModel}" update="@form"/>
 
         <p:dataTable var="client" widgetVar="clientsTable" value="#{statistiqueAutoMB.clients}" rows="5"
                      rowKey="#{client.id}" lazy="true" paginator="true"

@@ -2,10 +2,12 @@ package ml.iks.md.service;
 
 import ml.iks.md.infra.model.Filter;
 import ml.iks.md.models.*;
+import ml.iks.md.models.data.NumProfile;
 import ml.iks.md.repositories.*;
 import ml.iks.md.util.BeanLocator;
 import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.awt.font.NumericShaper;
 import java.io.Serializable;
 import java.util.*;
 
@@ -51,7 +54,6 @@ public class ClientService implements Serializable {
             pageable = PageRequest.of(page, filter.getPageSize(), Sort.by("id").descending());
             criteriaQuery.orderBy(criteriaBuilder.desc(root.get("id")));
         }
-
 
 //        if(somTotal)
 //            pageable = PageRequest.of(page, filter.getPageSize(), Sort.by("totalClient").descending());
@@ -129,6 +131,10 @@ public class ClientService implements Serializable {
 
     public long count() {
         return repository.count();
+    }
+
+    public long count(NumProfile profile) {
+        return BeanLocator.find(MobileNumberRepository.class).countMobileNumberByProfile(profile);
     }
 
     public Client findById(Long id) {

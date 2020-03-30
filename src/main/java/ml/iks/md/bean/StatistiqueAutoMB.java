@@ -3,7 +3,9 @@ package ml.iks.md.bean;
 import com.github.adminfaces.template.exception.BusinessException;
 import ml.iks.md.infra.model.Filter;
 import ml.iks.md.models.Client;
+import ml.iks.md.models.data.NumProfile;
 import ml.iks.md.service.ClientService;
+import ml.iks.md.util.AppUtil;
 import ml.iks.md.util.Utils;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
@@ -13,9 +15,15 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static com.github.adminfaces.template.util.Assert.has;
 
 /**
  * Created by rmpestano on 12/02/17.
@@ -37,6 +45,10 @@ public class StatistiqueAutoMB implements Serializable {
 
     List<Client> filteredValue;// datatable filteredValue attribute (column filters)
 
+    Date from, to;
+    NumProfile profile;
+    String numero;
+
     @PostConstruct
     public void initDataModel() {
         clients = new LazyDataModel<Client>() {
@@ -53,8 +65,10 @@ public class StatistiqueAutoMB implements Serializable {
                 filter.setFirst(first).setPageSize(pageSize)
                         .setSortField(sortField).setSortOrder(order)
                         .setParams(filters);
+
                 List<Client> list = service.paginate(filter, true);
                 setRowCount((int) service.count(filter));
+
                 return list;
             }
 
@@ -90,6 +104,10 @@ public class StatistiqueAutoMB implements Serializable {
     }
 
     public void delete() {
+
+    }
+
+    public void getSate(){
 
     }
 
@@ -131,5 +149,29 @@ public class StatistiqueAutoMB implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Date getFrom() {
+        return from;
+    }
+
+    public void setFrom(Date from) {
+        this.from = from;
+    }
+
+    public Date getTo() {
+        return to;
+    }
+
+    public void setTo(Date to) {
+        this.to = to;
+    }
+
+    public NumProfile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(NumProfile profile) {
+        this.profile = profile;
     }
 }

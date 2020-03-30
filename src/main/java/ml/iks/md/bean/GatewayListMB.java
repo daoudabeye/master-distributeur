@@ -1,9 +1,12 @@
 package ml.iks.md.bean;
 
 import com.github.adminfaces.template.exception.BusinessException;
+import ml.iks.md.events.AppCallbackManager;
 import ml.iks.md.infra.model.Filter;
-import ml.iks.md.models.GatewayDefinition;
-import ml.iks.md.models.MessagePattern;
+import ml.iks.md.models.*;
+import ml.iks.md.models.data.Carrier;
+import ml.iks.md.models.data.NumProfile;
+import ml.iks.md.service.AirtimeService;
 import ml.iks.md.service.GatewayService;
 import ml.iks.md.service.MsgPatternService;
 import ml.iks.md.util.BeanLocator;
@@ -17,6 +20,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -142,6 +146,28 @@ public class GatewayListMB implements Serializable {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void teste(){
+        //        AlertMaker.showTrayMessage("Teste", "Tray message content...");
+        String txt = "78648004*500#";
+        InMessage msg = new InMessage("96347412", "enc7", "Le 7864804 à effectué un paiement", new Date(), new Date(), "modem", Carrier.ORANGE, 1);
+        msg.setId(1L);
+
+        //ISAGO TESTE
+        BeanLocator.find(AirtimeService.class).updateIsagoNumber("96347412", "9874563214568");
+
+        //PAYMENT TESTE
+//        Payment paymentML = new Payment(1L, "modem", "transactionId2", "96347412", 5000.0, 100.0);
+//        BeanLocator.find(AppCallbackManager.class).registerPaymentMessageEvent(msg, paymentML);
+//        BeanLocator.find(AirtimeService.class).doSmsAction(msg, "78648004", "1000", "");
+
+
+        //INSCRIPTION TESTE
+//        InscriptionOperation ins = new InscriptionOperation("Moussa", "96347412", "78648004");
+//        ins.addNumber("96347412", NumProfile.CF);
+//
+//        BeanLocator.find(AppCallbackManager.class).registerInscriptionEvent(msg, ins);
     }
 
     public List<GatewayDefinition> getSelected() {

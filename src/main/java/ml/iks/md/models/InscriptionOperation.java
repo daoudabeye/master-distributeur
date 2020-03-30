@@ -7,9 +7,12 @@ import ml.iks.md.repositories.ClientRepository;
 import ml.iks.md.repositories.InMessageRepository;
 import ml.iks.md.repositories.MobileNumberRepository;
 import ml.iks.md.repositories.PaymentRepository;
+import ml.iks.md.service.AirtimeService;
+import ml.iks.md.service.GatewayService;
 import ml.iks.md.util.AppConstants;
 import ml.iks.md.util.BeanLocator;
 import ml.ikslib.gateway.message.OutboundMessage;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,7 +75,13 @@ public class InscriptionOperation extends AbstractOperation {
         }
 
         String txt = "Bienvenue chez Dream Tech. Votre inscription au service Boutikini a ete prise en compte. Nous vous remercions pour votre confiance";
-//        BeanLocator.find(Gate.class).sendNotification(client.getNumero(), txt);
+        BeanLocator.find(AirtimeService.class).sendNotification(client.getNumero(), txt);
+
+        String inscripteur = client.getNumeroInscripteur();
+        if(!StringUtils.isEmpty(inscripteur)){
+            String txtInscripteur = "L'inscription du " + client.getNumero() + " est reussie. Boutikini.";
+            BeanLocator.find(AirtimeService.class).sendNotification(inscripteur.replace("223", ""), txtInscripteur);
+        }
 
         List<Payment> payments = BeanLocator.find(PaymentRepository.class).
                 findByPayerAndStatusOrderByDateCreationDesc(client.getNumero(), OutboundMessage.SentStatus.Queued);
