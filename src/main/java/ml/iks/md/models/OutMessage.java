@@ -77,7 +77,7 @@ public class OutMessage implements Serializable {
         this.deliveryDate = null;
         this.requestDeliveryReport = out.getRequestDeliveryReport();
         this.deliveryStatus = null;
-        this.sentStatus = null;
+        this.sentStatus = out.getSentStatus() + "";
     }
 
     public Long getId() {

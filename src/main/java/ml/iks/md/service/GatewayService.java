@@ -396,7 +396,7 @@ public class GatewayService implements Serializable {
     }
 
     public Collection<OutboundMessage> getMessagesToSend() throws Exception {
-        Collection<OutMessage> outs = outMessageRepository.findBySentStatus(OutboundMessage.SentStatus.Unsent.toShortString());
+        Collection<OutMessage> outs = outMessageRepository.findBySentStatus(OutboundMessage.SentStatus.Unsent.name());
         Collection<OutboundMessage> messages = new LinkedList<OutboundMessage>();
         for(OutMessage sms: outs){
             if (!Common.isNullOrEmpty(sms.getMessageId())) {
